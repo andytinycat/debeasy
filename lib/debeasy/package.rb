@@ -8,6 +8,11 @@ module Debeasy
     attr_reader :preinst_contents, :prerm_contents
     attr_reader :postinst_contents, :postrm_contents
 
+    # Create a new Debeasy::Package object.
+    #
+    # Arguments:
+    #   path: (String)
+
     def initialize(path)
       @path = path
       @package = Archive.read_open_filename(path)
@@ -15,6 +20,8 @@ module Debeasy
       extract_files
       parse_control_file
     end
+
+    # Lists all the available fields on the package.
 
     def fields
       @fields.keys
@@ -25,6 +32,9 @@ module Debeasy
     end
 
     private
+
+    # Poke inside the package to find the control file,
+    # and the pre/post install scripts.
 
     def extract_files
       while file = @package.next_header
@@ -47,6 +57,8 @@ module Debeasy
         end
       end
     end
+
+    # Parse the available fields out of the Debian control file.
 
     def parse_control_file
       @control_file_contents.scan(/^([\w-]+?): (.*?)\n(?! )/m).each do |entry|
