@@ -1,6 +1,10 @@
 require 'libarchive'
+require 'filemagic'
 
 module Debeasy
+  class Error < RuntimeError; end
+  class NotAPackageError < Error; end
+
   class Package
     
     attr_reader :path, :package
@@ -15,6 +19,7 @@ module Debeasy
 
     def initialize(path)
       @path = path
+      raise NotAPackageError, "#{path} is not a Debian package" unless is_package_file?
       @package = Archive.read_open_filename(path)
       @fields = {}
       @filelist = []
@@ -33,6 +38,15 @@ module Debeasy
     end
 
     private
+
+    def is_package_file?
+      fm = FileMagic.new
+      if fm.file(@path) =~ /Debian binary package/
+        true
+      else
+        false
+      end
+    end
 
     # Poke inside the package to find the control file,
     # the pre/post install scripts, and a list of
