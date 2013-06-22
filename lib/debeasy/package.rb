@@ -21,7 +21,7 @@ module Debeasy
     end
 
     def method_missing(m, *args, &block)
-      @fields[m.to_s]
+      @fields.has_key?(m.to_s) ? @fields[m.to_s] : nil
     end
 
     private
