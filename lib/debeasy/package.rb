@@ -4,7 +4,7 @@ module Debeasy
   class Package
     
     attr_reader :path, :package
-    attr_reader :control_file_contents
+    attr_reader :control_file_contents, :filelist
     attr_reader :preinst_contents, :prerm_contents
     attr_reader :postinst_contents, :postrm_contents
 
@@ -17,6 +17,7 @@ module Debeasy
       @path = path
       @package = Archive.read_open_filename(path)
       @fields = {}
+      @filelist = []
       extract_files
       parse_control_file
     end
@@ -34,8 +35,9 @@ module Debeasy
     private
 
     # Poke inside the package to find the control file,
-    # and the pre/post install scripts.
-
+    # the pre/post install scripts, and a list of
+    # all the files it will deploy.
+    
     def extract_files
       while file = @package.next_header
         if file.pathname == "control.tar.gz"
@@ -53,6 +55,12 @@ module Debeasy
             when "./postrm"
               @postrm_contents = control_tar_gz.read_data
             end
+          end
+        end
+        if file.pathname == "data.tar.gz"
+          data_tar_gz = Archive.read_open_memory(@package.read_data)
+          while data_entry = data_tar_gz.next_header
+            @filelist << data_entry.pathname.sub(/^\./, "")
           end
         end
       end
