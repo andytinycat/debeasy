@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
                           programmatically read Debian packages with very
                           little effort.}
   spec.summary       = %q{Read .deb (Debian/Ubuntu) packages with ease!}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/andytinycat/debeasy"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
