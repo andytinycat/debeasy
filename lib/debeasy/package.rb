@@ -7,7 +7,7 @@ module Debeasy
 
   class Package
     
-    attr_reader :path, :package
+    attr_reader :path, :package_file
     attr_reader :control_file_contents, :filelist
     attr_reader :preinst_contents, :prerm_contents
     attr_reader :postinst_contents, :postrm_contents
@@ -20,7 +20,7 @@ module Debeasy
     def initialize(path)
       @path = path
       raise NotAPackageError, "#{path} is not a Debian package" unless is_package_file?
-      @package = Archive.read_open_filename(path)
+      @package_file = Archive.read_open_filename(path)
       @fields = {}
       @filelist = []
       extract_files
@@ -53,9 +53,9 @@ module Debeasy
     # all the files it will deploy.
     
     def extract_files
-      while file = @package.next_header
+      while file = @package_file.next_header
         if file.pathname == "control.tar.gz"
-          control_tar_gz = Archive.read_open_memory(@package.read_data)
+          control_tar_gz = Archive.read_open_memory(@package_file.read_data)
           while control_entry = control_tar_gz.next_header
             case control_entry.pathname
             when "./control"
@@ -72,7 +72,7 @@ module Debeasy
           end
         end
         if file.pathname == "data.tar.gz"
-          data_tar_gz = Archive.read_open_memory(@package.read_data)
+          data_tar_gz = Archive.read_open_memory(@package_file.read_data)
           while data_entry = data_tar_gz.next_header
             @filelist << data_entry.pathname.sub(/^\./, "")
           end
