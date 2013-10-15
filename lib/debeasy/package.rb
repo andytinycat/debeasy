@@ -74,7 +74,8 @@ module Debeasy
         if file.pathname == "data.tar.gz"
           data_tar_gz = Archive.read_open_memory(@package_file.read_data)
           while data_entry = data_tar_gz.next_header
-            @filelist << data_entry.pathname.sub(/^\./, "")
+            # Skip dirs; they're listed with a / as the last character
+            @filelist << data_entry.pathname.sub(/^\./, "") unless data_entry.pathname =~ /\/$/
           end
         end
       end
