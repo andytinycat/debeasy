@@ -42,6 +42,11 @@ module Debeasy
       @fields.has_key?(m.to_s) ? @fields[m.to_s] : nil
     end
 
+    # Utility method to get the field in a hash-like way.
+    def [](field)
+      @fields.has_key?(field.to_s) ? @fields[field.to_s] : nil
+    end
+
     private
 
     def is_package_file?
