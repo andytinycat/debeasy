@@ -33,6 +33,11 @@ module Debeasy
       @fields.keys
     end
 
+    # Get package metadata as a hash.
+    def to_hash
+      @fields
+    end
+
     def method_missing(m, *args, &block)
       @fields.has_key?(m.to_s) ? @fields[m.to_s] : nil
     end
