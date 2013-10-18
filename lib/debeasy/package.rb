@@ -1,5 +1,6 @@
 require 'libarchive'
 require 'filemagic'
+require 'digest'
 
 module Debeasy
   class Error < RuntimeError; end
@@ -25,6 +26,7 @@ module Debeasy
       @filelist = []
       extract_files
       parse_control_file
+      generate_checksums
     end
 
     # Lists all the available fields on the package.
@@ -34,6 +36,7 @@ module Debeasy
     end
 
     # Get package metadata as a hash.
+
     def to_hash
       @fields
     end
@@ -43,6 +46,7 @@ module Debeasy
     end
 
     # Utility method to get the field in a hash-like way.
+
     def [](field)
       @fields.has_key?(field.to_s) ? @fields[field.to_s] : nil
     end
@@ -56,6 +60,12 @@ module Debeasy
       else
         false
       end
+    end
+
+    def generate_checksums
+      @fields["MD5sum"] = Digest::MD5.hexdigest(File.read @path)
+      @fields["SHA1"] = Digest::SHA1.hexdigest(File.read @path)
+      @fields["SHA256"] = Digest::SHA256.hexdigest(File.read @path)
     end
 
     # Poke inside the package to find the control file,
