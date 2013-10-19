@@ -27,6 +27,8 @@ module Debeasy
       extract_files
       parse_control_file
       generate_checksums
+      get_size
+      get_filename
     end
 
     # Lists all the available fields on the package.
@@ -60,6 +62,14 @@ module Debeasy
       else
         false
       end
+    end
+
+    def get_size
+      @fields["size"] = File.size(@path)
+    end
+
+    def get_filename
+      @fields["filename"] = File.basename @path
     end
 
     def generate_checksums
