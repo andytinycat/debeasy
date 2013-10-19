@@ -118,6 +118,7 @@ module Debeasy
         field, value = entry
         @fields[field.gsub("-", "_").downcase] = value
       end
+      @fields["installed_size"] = @fields["installed_size"].to_i * 1024 unless @fields["installed_size"].nil?
     end
 
   end
