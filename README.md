@@ -21,6 +21,13 @@ To see the available fields on a package, do:
     pkg = Debeasy.read("/path/to/package.deb")
     puts pkg.fields
 
+You can read a field either by calling the method with the field name,
+or by using hash access syntax:
+
+    # Equivalent
+    pkg.installed_size
+    pkg["installed_size"]
+
 You can also read the preinst, prerm, postinst, and postrm scripts
 from the package:
 
@@ -28,6 +35,10 @@ from the package:
     pkg.prerm_contents
     pkg.postinst_contents
     pkg.postrm_contents
+    
+You can read the entire filelist of a package:
+
+    pkg.filelist
 
 ## Installation
 
