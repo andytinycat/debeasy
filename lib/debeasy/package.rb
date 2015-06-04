@@ -87,16 +87,20 @@ module Debeasy
         if file.pathname == "control.tar.gz"
           control_tar_gz = Archive.read_open_memory(@package_file.read_data)
           while control_entry = control_tar_gz.next_header
-            case control_entry.pathname
-            when "./control"
+            cs = control_entry.pathname
+            if cs =~ /control$/
               @control_file_contents = control_tar_gz.read_data
-            when "./preinst"
+            end
+            if cs =~ /preinst$/
               @preinst_contents = control_tar_gz.read_data
-            when "./prerm"
+            end
+            if cs =~ /prerm$/
               @prerm_contents = control_tar_gz.read_data
-            when "./postinst"
+            end
+            if cs =~ /postinst$/
               @postinst_contents = control_tar_gz.read_data
-            when "./postrm"
+            end
+            if cs =~ /postrm$/
               @postrm_contents = control_tar_gz.read_data
             end
           end
